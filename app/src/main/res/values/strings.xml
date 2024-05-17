@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">RunningApp</string>
+    <string name="google_maps_key">AIzaSyA1JCC3a8oGCl575J6A4HvPr0dvVqN_yjc</string>
+
+    <string-array name="filter_options">
+        <item>Date</item>
+        <item>Running Time</item>
+        <item>Distance</item>
+        <item>Average Speed</item>
+        <item>Calories Burned</item>
+    </string-array>
+
+</resources>
