@@ -1,9 +1,16 @@
 package com.brownx.runningapp.run.di
 
+import android.app.Application
 import android.content.Context
 import androidx.room.Room
 import com.brownx.runningapp.run.data.local.db.RunningDatabase
-import com.brownx.runningapp.run.util.Const.RUNNING_DATABASE_NAME
+import com.brownx.runningapp.run.domain.usecase.CalculateCurrentPaceUseCase
+import com.brownx.runningapp.run.domain.usecase.CalculateIntervalDistanceUseCase
+import com.brownx.runningapp.run.domain.usecase.CalculatePolylineDistanceUseCase
+import com.brownx.runningapp.run.domain.usecase.CalculateTotalDistanceUseCase
+import com.brownx.runningapp.run.domain.usecase.FormatStopWatchUseCase
+import com.brownx.runningapp.run.domain.usecase.MetricsUseCase
+import com.brownx.runningapp.util.Const.RUNNING_DATABASE_NAME
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -33,5 +40,52 @@ object AppModule {
     @Singleton
     @Provides
     fun provideRunDao(db: RunningDatabase) = db.getRunDao()
+
+    @Singleton
+    @Provides
+    fun provideContext(
+        application: Application
+    ): Context = application.applicationContext
+
+    @Singleton
+    @Provides
+    fun provideStopWatchUseCase() : FormatStopWatchUseCase {
+        return FormatStopWatchUseCase()
+    }
+
+    @Singleton
+    @Provides
+    fun provideCalculatePolylineDistanceUseCase() : CalculatePolylineDistanceUseCase {
+        return CalculatePolylineDistanceUseCase()
+    }
+
+    @Singleton
+    @Provides
+    fun provideCalculateTotalDistanceUseCase() : CalculateTotalDistanceUseCase {
+        return CalculateTotalDistanceUseCase(
+            calculatePolylineDistanceUseCase = CalculatePolylineDistanceUseCase()
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun provideCalculateCurrentPaceUseCase() : CalculateCurrentPaceUseCase {
+        return CalculateCurrentPaceUseCase(
+            calculateIntervalDistanceUseCase = CalculateIntervalDistanceUseCase()
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun provideMetricsUseCase() : MetricsUseCase {
+        return MetricsUseCase(
+            CalculateCurrentPaceUseCase(calculateIntervalDistanceUseCase = CalculateIntervalDistanceUseCase()),
+            CalculateIntervalDistanceUseCase(),
+            CalculatePolylineDistanceUseCase(),
+            CalculateTotalDistanceUseCase(calculatePolylineDistanceUseCase = CalculatePolylineDistanceUseCase())
+        )
+    }
+
+
 
 }

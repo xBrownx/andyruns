@@ -1,4 +1,4 @@
-package com.brownx.runningapp.run.presenter
+package com.brownx.runningapp.statistics.presenter
 
 import androidx.lifecycle.ViewModel
 import com.brownx.runningapp.run.domain.repository.RunRepository

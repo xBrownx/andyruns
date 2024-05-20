@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION"/>
 
     <application
         android:name=".App"
@@ -20,7 +21,7 @@
         tools:targetApi="31">
 
         <activity
-            android:name=".run.presenter.MainActivity"
+            android:name=".core.presenter.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.RunningApp"
             android:launchMode="singleTask">
@@ -30,6 +31,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service android:name=".run.services.TrackingService"
+            android:foregroundServiceType="location" />
 
         <meta-data
             android:name="com.google.android.gms.version"

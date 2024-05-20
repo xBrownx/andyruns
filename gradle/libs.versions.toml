@@ -1,21 +1,16 @@
 [versions]
 agp = "8.3.2"
 androidLibrary = '8.3.2'
-daggerHiltAndroid = "2.48"
 easypermissions = "3.0.0"
 extensions = "1.1.1"
 glide = "4.11.0"
 gradle = "8.3.2"
-hiltAndroid = "2.49"
-hiltAndroidCompiler = "2.28-alpha"
-hiltAndroidGradlePlugin = "2.48"
-hiltLifecycleViewmodel = "1.0.0-alpha03"
+daggerHiltAndroid = "2.49"
 hiltNavigationCompose = "1.2.0"
 kotlin = "1.9.23"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.1.5"
-kapt = "1.9.24"
 espressoCore = "3.5.1"
 kotlinxCoroutinesAndroid = "1.8.0"
 kotlinxCoroutinesCore = "1.8.0"
@@ -25,9 +20,11 @@ composeBom = "2024.05.00"
 lifecycleRuntimeKtxVersion = "2.8.0"
 lifecycleViewmodelKtx = "2.8.0"
 lifecycleViewmodelKtxVersion = "2.8.0"
+mapsCompose = "4.4.1"
 material = "1.12.0"
 mpandroidchart = "v3.1.0"
 navigationFragmentKtx = "2.7.7"
+playServicesAuth = "21.1.1"
 playServicesLocation = "21.2.0"
 playServicesMaps = "18.2.0"
 roomRuntime = "2.6.1"
@@ -37,8 +34,7 @@ timber = "4.7.1"
 [libraries]
 androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activityCompose" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-androidx-hilt-lifecycle-viewmodel = { module = "androidx.hilt:hilt-lifecycle-viewmodel", version.ref = "hiltLifecycleViewmodel" }
-androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+
 androidx-lifecycle-runtime-ktx-v220 = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtxVersion" }
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
 androidx-lifecycle-viewmodel-ktx-v220 = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtxVersion" }
@@ -49,13 +45,19 @@ androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomRunt
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
 androidx-security-crypto = { module = "androidx.security:security-crypto", version.ref = "securityCrypto" }
 compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "glide" }
-dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "hiltAndroid" }
 easypermissions = { module = "pub.devrel:easypermissions", version.ref = "easypermissions" }
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
-hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompiler" }
-hilt-android-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hiltAndroidGradlePlugin" }
-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltAndroid" }
+
+dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "daggerHiltAndroid" }
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "daggerHiltAndroid" }
+hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "daggerHiltAndroid" }
+hilt-android-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "daggerHiltAndroid" }
+hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "daggerHiltAndroid" }
+androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+
+maps-compose = { module = "com.google.maps.android:maps-compose", version.ref = "mapsCompose" }
+maps-compose-widgets = { module = "com.google.maps.android:maps-compose-widgets", version.ref = "mapsCompose" }
+play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
 xtensions = { module = "android.arch.lifecycle:extensions", version.ref = "extensions" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }

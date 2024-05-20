@@ -3,9 +3,9 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.daggerHiltAndroid)
+    id 'kotlin-kapt'
 }
 
-apply plugin: 'kotlin-kapt'
 
 android {
     namespace 'com.brownx.runningapp'
@@ -21,6 +21,12 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary true
+        }
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
         }
     }
 
@@ -127,7 +133,6 @@ dependencies {
     implementation libs.androidx.security.crypto
     implementation libs.androidx.hilt.navigation.compose
     implementation libs.androidx.activity.ktx
-    implementation libs.androidx.hilt.lifecycle.viewmodel
 
     //Dagger - Hilt
     kapt libs.hilt.android.compiler
@@ -143,8 +148,16 @@ dependencies {
 
     implementation libs.xtensions
 
+    // google maps
+    implementation libs.play.services.maps
+    implementation libs.play.services.location
+    implementation libs.play.services.auth
+    implementation libs.maps.compose
+    implementation libs.maps.compose.widgets
+
 }
 
 kapt {
     correctErrorTypes true
+    generateStubs true
 }
