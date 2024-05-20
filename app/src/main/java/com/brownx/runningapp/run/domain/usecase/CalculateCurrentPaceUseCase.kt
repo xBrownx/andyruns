@@ -1,10 +1,8 @@
 package com.brownx.runningapp.run.domain.usecase
 
 import com.brownx.runningapp.run.services.Polyline
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import kotlin.math.round
 
 /**
  * @author Andrew Brown
@@ -13,17 +11,23 @@ import kotlin.math.round
 class CalculateCurrentPaceUseCase @Inject constructor(
     val calculateIntervalDistanceUseCase: CalculateIntervalDistanceUseCase
 ) {
-    operator fun invoke(polyline: Polyline?, lastTimeStamp: Long): Float {
-        if(polyline.isNullOrEmpty()) return 0f
+    operator fun invoke(polyline: Polyline?, lastTimeStamp: Long): String {
 
-        val elapsedTimeInSeconds = (System.currentTimeMillis() - lastTimeStamp) / 1000f
+        if (polyline.isNullOrEmpty()) return "00'00\""
+
+        val elapsedTimeInMillis = (System.currentTimeMillis() - lastTimeStamp)
+
         val distanceInMeters = calculateIntervalDistanceUseCase(polyline)
-        val paceInMinutesPerKM =  (elapsedTimeInSeconds / 60) / (distanceInMeters / 1000f)
 
-        val minutes = TimeUnit.MILLISECONDS.toMinutes(paceInMinutesPerKM.toLong())
+        val minutesPerKm = (elapsedTimeInMillis) / (distanceInMeters * 1000f)
 
+        var millisPerKm = minutesPerKm.toLong()
 
-//        val paceInMinutesPerKM = round((distanceInMeters / 1000f) / (2000f / 1000f / 60 / 60) * 10) / 10f
-        return paceInMinutesPerKM
+        val minutes = TimeUnit.MILLISECONDS.toMinutes(millisPerKm)
+        millisPerKm -= TimeUnit.MINUTES.toMillis(minutes)
+        val seconds = TimeUnit.MILLISECONDS.toSeconds(millisPerKm)
+
+        return "${if(minutes < 10) "0" else ""}$minutes'" +
+                "${if(seconds < 10) "0" else ""}$seconds\""
     }
 }

@@ -2,6 +2,7 @@ package com.brownx.runningapp.core.presenter
 
 import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -9,10 +10,10 @@ import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -21,14 +22,13 @@ import com.brownx.runningapp.log.presenter.LogScreen
 import com.brownx.runningapp.profile.presenter.ProfileScreen
 import com.brownx.runningapp.run.presenter.RunScreen
 import com.brownx.runningapp.run.services.TrackingService
+import com.brownx.runningapp.run.util.TrackingUtil
 import com.brownx.runningapp.settings.presenter.SettingsScreen
 import com.brownx.runningapp.statistics.presenter.StatisticsScreen
 import com.brownx.runningapp.ui.theme.RunningAppTheme
 import com.brownx.runningapp.util.Const
-import com.brownx.runningapp.util.Const.ACTION_START_OR_RESUME_SERVICE
 import com.brownx.runningapp.util.Const.REQUEST_CODE_LOCATION_PERMISSION
 import com.brownx.runningapp.util.Screen
-import com.brownx.runningapp.run.util.TrackingUtil
 import dagger.hilt.android.AndroidEntryPoint
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
@@ -36,10 +36,29 @@ import pub.devrel.easypermissions.EasyPermissions
 @AndroidEntryPoint
 class MainActivity : ComponentActivity(), EasyPermissions.PermissionCallbacks {
 
-    @RequiresApi(Build.VERSION_CODES.O)
+
+
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        requestPermissions()
+        if (!(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) ==
+                    PackageManager.PERMISSION_GRANTED &&
+                    ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) ==
+                    PackageManager.PERMISSION_GRANTED &&
+                    ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) ==
+                    PackageManager.PERMISSION_GRANTED
+        )) {
+            ActivityCompat.requestPermissions(
+                this, arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                ),
+                REQUEST_CODE_LOCATION_PERMISSION
+            )
+        }
+
+        //       requestPermissions()
 //        navigateToTrackingFragment(intent)
         setContent {
             RunningAppTheme {
@@ -63,7 +82,6 @@ class MainActivity : ComponentActivity(), EasyPermissions.PermissionCallbacks {
             }
         }
     }
-
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
