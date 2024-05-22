@@ -38,7 +38,12 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
+import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.tasks.CancellationToken
+import com.google.android.gms.tasks.CancellationTokenSource
+import com.google.android.gms.tasks.OnTokenCanceledListener
+import com.google.android.gms.tasks.Task
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -52,7 +57,6 @@ import timber.log.Timber
  * @author Andrew Brown
  * created on 18/05/2024
  */
-
 
 
 class TrackingService : LifecycleService() {
@@ -77,17 +81,39 @@ class TrackingService : LifecycleService() {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
         CoroutineScope(Dispatchers.Main).launch {
-            trackingState.asStateFlow().collect{
+            trackingState.asStateFlow().collect {
                 updateLocationTracking(it.isTracking)
+            }
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    fun getMyLocation() {
+        if (TrackingUtil.hasLocationPermissions(this)) {
+            fusedLocationProviderClient.getCurrentLocation(
+                PRIORITY_HIGH_ACCURACY,
+                object : CancellationToken() {
+                    override fun onCanceledRequested(p0: OnTokenCanceledListener) =
+                        CancellationTokenSource().token
+
+                    override fun isCancellationRequested() = false
+                }).addOnSuccessListener { location: Location? ->
+                if (location != null) {
+                    val lat = location.latitude
+                    val lng = location.longitude
+                    trackingState.update {
+                        it.copy(myLocation = LatLng(lat, lng))
+                    }
+                }
             }
         }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         intent?.let {
-            when(it.action) {
+            when (it.action) {
                 ACTION_START_OR_RESUME_SERVICE -> {
-                    if(isFirstRun) {
+                    if (isFirstRun) {
                         startForegroundService()
                         isFirstRun = false
                         Timber.d("Start service")
@@ -96,10 +122,12 @@ class TrackingService : LifecycleService() {
                         Timber.d("Resumed service")
                     }
                 }
+
                 ACTION_PAUSE_SERVICE -> {
                     pauseService()
                     Timber.d("Paused service")
                 }
+
                 ACTION_STOP_SERVICE -> {
                     Timber.d("Stopped service")
                 }
@@ -152,8 +180,8 @@ class TrackingService : LifecycleService() {
 
     @SuppressLint("MissingPermission")
     private fun updateLocationTracking(isTracking: Boolean) {
-        if(isTracking) {
-            if(TrackingUtil.hasLocationPermissions(this)) {
+        if (isTracking) {
+            if (TrackingUtil.hasLocationPermissions(this)) {
                 val request = LocationRequest().apply {
                     interval = LOCATION_UPDATE_INTERVAL
                     fastestInterval = FASTEST_LOCATION_INTERVAL
@@ -166,6 +194,7 @@ class TrackingService : LifecycleService() {
                 )
             }
         } else {
+            getMyLocation()
             fusedLocationProviderClient.removeLocationUpdates(locationCallback)
         }
     }
@@ -173,9 +202,9 @@ class TrackingService : LifecycleService() {
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(result: LocationResult) {
             super.onLocationResult(result)
-            if(trackingState.value.isTracking) {
+            if (trackingState.value.isTracking) {
                 result.locations.let { locations ->
-                    for(location in locations) {
+                    for (location in locations) {
                         addPathPoint(location)
                         trackingState.update {
                             it.copy(
@@ -183,7 +212,6 @@ class TrackingService : LifecycleService() {
                                 timeStamp = System.currentTimeMillis()
                             )
                         }
-                        //myLocation.update { LatLng(location.latitude, location.longitude) }
                     }
                 }
             }
@@ -203,7 +231,7 @@ class TrackingService : LifecycleService() {
 
     private fun addEmptyPolyline() = trackingState.update {
         it.copy(
-            pathPoints = it.pathPoints.also {it2 ->
+            pathPoints = it.pathPoints.also { it2 ->
                 it2.add(mutableListOf())
             }
         )
@@ -217,7 +245,7 @@ class TrackingService : LifecycleService() {
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE)
                 as NotificationManager
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel(notificationManager)
         }
 

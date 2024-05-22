@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.daggerHiltAndroid)
     id 'kotlin-kapt'
+    id 'com.google.secrets_gradle_plugin' version '0.4'
 }
 
 

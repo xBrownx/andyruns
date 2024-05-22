@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import androidx.room.Room
 import com.brownx.runningapp.run.data.local.db.RunningDatabase
+import com.brownx.runningapp.run.domain.usecase.CalculateAvgPaceUseCase
 import com.brownx.runningapp.run.domain.usecase.CalculateCurrentPaceUseCase
 import com.brownx.runningapp.run.domain.usecase.CalculateIntervalDistanceUseCase
 import com.brownx.runningapp.run.domain.usecase.CalculatePolylineDistanceUseCase
@@ -82,7 +83,12 @@ object AppModule {
             CalculateCurrentPaceUseCase(calculateIntervalDistanceUseCase = CalculateIntervalDistanceUseCase()),
             CalculateIntervalDistanceUseCase(),
             CalculatePolylineDistanceUseCase(),
-            CalculateTotalDistanceUseCase(calculatePolylineDistanceUseCase = CalculatePolylineDistanceUseCase())
+            CalculateTotalDistanceUseCase(calculatePolylineDistanceUseCase = CalculatePolylineDistanceUseCase()),
+            CalculateAvgPaceUseCase(
+                calculateTotalDistanceUseCase = CalculateTotalDistanceUseCase(
+                    calculatePolylineDistanceUseCase = CalculatePolylineDistanceUseCase()
+                )
+            )
         )
     }
 

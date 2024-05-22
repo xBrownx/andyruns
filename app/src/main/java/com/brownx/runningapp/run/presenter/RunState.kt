@@ -17,7 +17,7 @@ data class RunState(
 
     val totalDistance: Int = 0,
     val currentPace: String = "00'00\"",
-    val avgPace: Float = 0f,
+    val avgPace: String = "00'00\"",
 
     val timeRunInMillis: String = "",
     val currentIntervalActivity: String = "",

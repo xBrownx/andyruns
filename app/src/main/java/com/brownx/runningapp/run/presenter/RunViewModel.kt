@@ -55,10 +55,21 @@ class RunViewModel @Inject constructor(
                                 )
                                  metricsUseCase.calculateCurrentPaceUseCase(
                                      polyline = state.pathPoints.last(),
-                                     it.lastTimeStamp
+                                     lastTimeStamp = it.lastTimeStamp
                                  )
                             else
                                 it.currentPace,
+                        avgPace =
+                        if (
+                            state.pathPoints.isNotEmpty()
+                            && it.lastTimeStamp != state.timeStamp
+                        )
+                            metricsUseCase.calculateAvgPaceUseCase(
+                                pathPoints = state.pathPoints,
+                                totalTimeInMillis = state.timeRunInMillis
+                            )
+                        else
+                            it.avgPace,
                     )
                 }
             }
@@ -79,6 +90,7 @@ class RunViewModel @Inject constructor(
             }
         }
     }
+
 
     private fun sendCommandToService(action: String) =
         Intent(application, TrackingService::class.java).also {

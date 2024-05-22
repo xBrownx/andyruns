@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,6 +31,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.brownx.runningapp.R
 import com.brownx.runningapp.run.presenter.components.MapUi
@@ -48,15 +51,15 @@ import com.google.maps.android.compose.rememberCameraPositionState
  * created on 19/05/2024
  */
 
-
-
-
-
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun RunScreen(
-    modifier: Modifier
+    modifier: Modifier = Modifier
 ) {
+
+    val runViewModel = hiltViewModel<RunViewModel>()
+    val runState by runViewModel.runState.collectAsState()
+
     Scaffold(
         topBar = {
             RunTopToolBar(toolbarTitle = "Run")
@@ -71,7 +74,10 @@ fun RunScreen(
                     .fillMaxHeight()
                     .weight(2f)
             ) {
-                MapUi()
+                MapUi(
+                    runViewModel = runViewModel,
+                    runState = runState
+                )
             }
             Row(
                 modifier = Modifier
@@ -79,10 +85,20 @@ fun RunScreen(
                     .fillMaxHeight()
                     .weight(1f)
             ) {
-                RunDetails()
+                RunDetails(
+                    runViewModel = runViewModel,
+                    runState = runState
+                )
             }
         }
     }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Preview
+@Composable
+fun Preview() {
+    RunScreen()
 }
 
 

@@ -1,6 +1,7 @@
 package com.brownx.runningapp.run.domain.usecase
 
 import com.brownx.runningapp.run.services.Polyline
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -16,16 +17,13 @@ class CalculateCurrentPaceUseCase @Inject constructor(
         if (polyline.isNullOrEmpty()) return "00'00\""
 
         val elapsedTimeInMillis = (System.currentTimeMillis() - lastTimeStamp)
-
         val distanceInMeters = calculateIntervalDistanceUseCase(polyline)
 
-        val minutesPerKm = (elapsedTimeInMillis) / (distanceInMeters * 1000f)
+        var millisPerKm = ((elapsedTimeInMillis / 1000f / 60) / (distanceInMeters / 1000f)) * 60 * 1000
 
-        var millisPerKm = minutesPerKm.toLong()
-
-        val minutes = TimeUnit.MILLISECONDS.toMinutes(millisPerKm)
+        val minutes = TimeUnit.MILLISECONDS.toMinutes(millisPerKm.toLong())
         millisPerKm -= TimeUnit.MINUTES.toMillis(minutes)
-        val seconds = TimeUnit.MILLISECONDS.toSeconds(millisPerKm)
+        val seconds = TimeUnit.MILLISECONDS.toSeconds(millisPerKm.toLong())
 
         return "${if(minutes < 10) "0" else ""}$minutes'" +
                 "${if(seconds < 10) "0" else ""}$seconds\""

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
@@ -19,7 +20,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import com.brownx.runningapp.R
@@ -36,11 +39,10 @@ import com.brownx.runningapp.run.services.TrackingService
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun RunDetails() {
-
-    val runViewModel = hiltViewModel<RunViewModel>()
-    val runState by runViewModel.runState.collectAsState()
-
+fun RunDetails(
+    runViewModel: RunViewModel,
+    runState: RunState
+) {
     Row(
         modifier = Modifier
             .fillMaxSize()
@@ -78,12 +80,30 @@ fun LeftColumn(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Row { Text(text = "Distance") }
-        Row { Text(text = "${runState.totalDistance}m") }
-        Row { Text(text = "Current Pace") }
-        Row { Text(text = "${runState.currentPace}") }
-        Row { Text(text = "Average Pace") }
-        Row { Text(text = "0'0\"") }
+        Row {
+            Text(
+                text = "Distance",
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
+        Row {
+            Text(
+                text = "${runState.totalDistance}m",
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
+        Row {
+            Text(
+                text = "Average Pace",
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
+        Row {
+            Text(
+                text = runState.avgPace,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
     }
 }
 
@@ -98,10 +118,22 @@ fun MiddleColumn(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Row { Text(text = "Warm Up") }
-        Row { Text(text = runState.timeRunInMillis) }
+        Row {
+            Text(
+                text = "Warm Up",
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
+        Row {
+            Text(
+                text = runState.timeRunInMillis,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
         IconButton(
-            modifier = Modifier.scale(1.5f),
+            modifier = Modifier
+                .scale(1.5f)
+                .padding(vertical = 10.dp),
             onClick = {
                 runViewModel.onEvent(
                     RunUiEvents.OnToggleRun
@@ -114,9 +146,28 @@ fun MiddleColumn(
                 } else {
                     R.drawable.play_circle_svgrepo_com
                 }
+            val iconColour =
+                if (runState.isTracking) {
+                    Color.Red
+                } else {
+                    MaterialTheme.colorScheme.primary
+                }
             Icon(
                 painter = painterResource(id = icon),
-                contentDescription = "play_pause"
+                contentDescription = "play_pause",
+                tint = iconColour
+            )
+        }
+        Row {
+            Text(
+                text = "Current Pace",
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
+        Row {
+            Text(
+                text = runState.currentPace,
+                color = MaterialTheme.colorScheme.primary
             )
         }
     }
@@ -132,6 +183,17 @@ fun RightColumn(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Row { Text(text = "Next Up") }
+        Row {
+            Text(
+                text = "Next Up",
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
+        Row {
+            Text(
+                text = "Jog 03:00",
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
     }
 }

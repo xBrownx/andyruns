@@ -6,9 +6,9 @@ package com.brownx.runningapp.run.domain.usecase
  */
 
 data class MetricsUseCase (
-    val calculateCurrentPaceUseCase: CalculateCurrentPaceUseCase,
-    val calculateIntervalDistanceUseCase: CalculateIntervalDistanceUseCase,
-    val calculatePolylineDistanceUseCase: CalculatePolylineDistanceUseCase,
-    val calculateTotalDistanceUseCase: CalculateTotalDistanceUseCase,
-
+    val calculateCurrentPaceUseCase : CalculateCurrentPaceUseCase,
+    val calculateIntervalDistanceUseCase : CalculateIntervalDistanceUseCase,
+    val calculatePolylineDistanceUseCase : CalculatePolylineDistanceUseCase,
+    val calculateTotalDistanceUseCase : CalculateTotalDistanceUseCase,
+    val calculateAvgPaceUseCase : CalculateAvgPaceUseCase
 )

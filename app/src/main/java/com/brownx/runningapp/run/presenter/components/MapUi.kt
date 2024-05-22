@@ -11,6 +11,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.brownx.runningapp.run.presenter.RunState
 import com.brownx.runningapp.run.presenter.RunViewModel
 import com.brownx.runningapp.util.Const
 import com.google.android.gms.maps.CameraUpdate
@@ -28,10 +29,10 @@ import com.google.maps.android.compose.rememberCameraPositionState
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun MapUi() {
-
-    val runViewModel = hiltViewModel<RunViewModel>()
-    val runState by runViewModel.runState.collectAsState()
+fun MapUi(
+    runViewModel: RunViewModel,
+    runState: RunState
+) {
 
     val mapProperties by remember {
         mutableStateOf(
