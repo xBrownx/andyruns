@@ -3,6 +3,7 @@ package com.brownx.runningapp.run.presenter
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.os.CountDownTimer
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asFlow
@@ -43,23 +44,23 @@ class RunViewModel @Inject constructor(
                 _runState.update {
                     it.copy(
                         pathPoints = state.pathPoints,
-                        timeRunInMillis = formatStopWatchUseCase(state.timeRunInMillis, true),
+                        totalTimeRunInMillis = formatStopWatchUseCase(state.timeRunInMillis, true),
                         isTracking = state.isTracking,
                         myLocation = state.myLocation,
                         lastTimeStamp = state.timeStamp,
-                        currentPace =
-                            if (
-                                state.pathPoints.isNotEmpty() &&
-                                state.pathPoints.last().isNotEmpty()
-                                && it.lastTimeStamp != state.timeStamp
-                                )
-                                 metricsUseCase.calculateCurrentPaceUseCase(
-                                     polyline = state.pathPoints.last(),
-                                     lastTimeStamp = it.lastTimeStamp
-                                 )
-                            else
-                                it.currentPace,
-                        avgPace =
+                        currentPaceInMinutesPerKm =
+                        if (
+                            state.pathPoints.isNotEmpty() &&
+                            state.pathPoints.last().isNotEmpty()
+                            && it.lastTimeStamp != state.timeStamp
+                        )
+                            metricsUseCase.calculateCurrentPaceUseCase(
+                                polyline = state.pathPoints.last(),
+                                lastTimeStamp = it.lastTimeStamp
+                            )
+                        else
+                            it.currentPaceInMinutesPerKm,
+                        avgPaceInMinutesPerKm =
                         if (
                             state.pathPoints.isNotEmpty()
                             && it.lastTimeStamp != state.timeStamp
@@ -69,11 +70,17 @@ class RunViewModel @Inject constructor(
                                 totalTimeInMillis = state.timeRunInMillis
                             )
                         else
-                            it.avgPace,
+                            it.avgPaceInMinutesPerKm,
+                        intervalTimeRemainingInMillis = getIntervalRemainingTime()
+
                     )
                 }
             }
         }
+    }
+
+    private fun getIntervalRemainingTime(): Long {
+        val
     }
 
     fun onEvent(uiEvent: RunUiEvents) {
@@ -91,7 +98,6 @@ class RunViewModel @Inject constructor(
         }
     }
 
-
     private fun sendCommandToService(action: String) =
         Intent(application, TrackingService::class.java).also {
             it.action = action
@@ -108,9 +114,10 @@ class RunViewModel @Inject constructor(
 
     fun updateDistance() {
         _runState.update {
-            it.copy(totalDistance = metricsUseCase.calculateTotalDistanceUseCase(runState.value.pathPoints))
+            it.copy(
+                totalDistanceInMetres =
+                metricsUseCase.calculateTotalDistanceUseCase(runState.value.pathPoints)
+            )
         }
     }
-
-
 }

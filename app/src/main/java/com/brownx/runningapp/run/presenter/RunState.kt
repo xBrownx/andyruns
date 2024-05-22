@@ -15,18 +15,24 @@ data class RunState(
     val isScreenLocked: Boolean = false,
     val isTracking: Boolean =  false,
 
-    val totalDistance: Int = 0,
-    val currentPace: String = "00'00\"",
-    val avgPace: String = "00'00\"",
+    val totalDistanceInMetres: Int = 0,
+    val currentPaceInMinutesPerKm: String = "00'00\"",
+    val avgPaceInMinutesPerKm: String = "00'00\"",
 
-    val timeRunInMillis: String = "",
-    val currentIntervalActivity: String = "",
-    val totalTimeRemainingInMillis: Long = 0L,
+    val totalRunDurationInMillis: String = "",
+    val totalTimeRunInMillis: String = "",
+
+    val intervalActivity: String = "",
+    val intervalDurationInMillis: Long = 360000L, // 5 minutes
     val intervalTimeRemainingInMillis: Long = 0L,
+    val intervalProgress: Float = 1.00f,
 
     val myLocation: LatLng = SYDNEY,
     val pathPoints: Polylines = mutableListOf(),
 
     val lastTimeStamp: Long = 0L,
+
+
+
 
 )
